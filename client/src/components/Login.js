@@ -31,11 +31,13 @@ const LoginForm = ({ errors, touched, values, status }) => {
 
   const classes = useStyles();
 
+
+
   return (
     <>
       <div className="container2">
         <Card className={classes.card}>
-          <h2>New User Form</h2>
+          <h2>Login Page</h2>
           <Form className="formCon">
             <Field type="text" name="username" placeholder="username..." />
             {touched.username && errors.username && (
@@ -49,31 +51,26 @@ const LoginForm = ({ errors, touched, values, status }) => {
             <button className="button" type="submit">
               Create Account
             </button>
-            <Link to="/login">
-              <Button className="button">Login here</Button>
-            </Link>
+
           </Form>
         </Card>
       </div>
 
-      {/* <div className="userCardCon"> */}
-      {/*   {users.map(user => ( */}
-      {/*     <UserCard key={user.id} props={user} /> */}
-      {/*   ))} */}
-      {/* </div> */}
+
     </>
   );
 };
 
-//===== Time to use a Higher Order Component
+
 const FormikLoginForm = withFormik({
-  mapPropsToValues({ username, password }) {
+  mapPropsToValues({ username, password, history }) {
     return {
       username: username || '',
-      password: password || ''
+      password: password || '',
+      history: history || ''
     };
   },
-  //=== ValidationSchema nice tool to inculde error messages
+
 
   validationSchema: Yup.object().shape({
     username: Yup.string().required('Please enter a username'),
@@ -83,9 +80,9 @@ const FormikLoginForm = withFormik({
     axios
       .post('http://localhost:5000/api/login', values)
       .then(res => {
-        console.log(res);
-        console.log(values);
+
         localStorage.setItem('token', res.data.payload)
+        values.history.push("/BubblePage")
 
         resetForm();
       })
