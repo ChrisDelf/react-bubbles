@@ -1,43 +1,51 @@
-import React, { useState } from "react";
-import axios from "axios";
-import {axiosWithAuth} from '../utils';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { axiosWithAuth } from '../utils';
 
 const initialColor = {
-  color: "",
-  code: { hex: "" }
+  color: '',
+  code: { hex: '' }
 };
 
-const ColorList = ({ colors, updateColors , setStatus}) => {
+const ColorList = ({ colors, updateColors, setStatus }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
-
   const editColor = color => {
-    console.log(color.id)
-
     setEditing(true);
     setColorToEdit(color);
   };
 
-
   const saveEdit = e => {
     e.preventDefault();
-        // Make a put request to save your updated color
+    // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
     axiosWithAuth()
       .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
-      .then(res => { console.log("Update Res", res)
-      setStatus(res.data)
+      .then(res => {
+        console.log('Update Res', res);
+        setStatus(res.data);
+        setEditing(false);
       })
       .catch(err => {
-        console.log(err)
-      })
+        console.log(err);
+      });
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWithAuth()
+      .delete(`http://localhost:5000/api/colors/${color.id}`)
+      .then(res => {
+        setStatus(res.data);
+
+      })
+    .catch(err => {
+      console.log("Delete Error", err)
+    })
+
   };
 
   return (
@@ -49,7 +57,7 @@ const ColorList = ({ colors, updateColors , setStatus}) => {
             <span>
               <span className="delete" onClick={() => deleteColor(color)}>
                 x
-              </span>{" "}
+              </span>{' '}
               {color.color}
             </span>
             <div
