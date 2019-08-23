@@ -19,19 +19,27 @@ const useStyles = makeStyles({
   card: {
     maxWidth: 500,
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'column',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    marginTop: '300px'
   },
   media: {
-    height: 200
+    height: 200,
+  },
+  btn:
+  {
+  background: 'orange',
+  },
+  error:{
+    color: 'red',
+    fontSize: '.7rem'
+
   }
+  ,
 });
 const LoginForm = ({ errors, touched, values, status }) => {
-
   const classes = useStyles();
-
-
 
   return (
     <>
@@ -39,28 +47,26 @@ const LoginForm = ({ errors, touched, values, status }) => {
         <Card className={classes.card}>
           <h2>Login Page</h2>
           <Form className="formCon">
+            <label>Username</label>
             <Field type="text" name="username" placeholder="username..." />
             {touched.username && errors.username && (
-              <p className="error">{errors.username}</p>
+              <p className={classes.error}>{errors.username}</p>
             )}
+            <label>Password</label>
             <Field type="password" name="password" placeholder="password.." />
             {touched.password && errors.password && (
-              <p className="error">{errors.password}</p>
+              <p className={classes.error}>{errors.password}</p>
             )}
 
-            <button className="button" type="submit">
+            <Button className={classes.btn} type="submit">
               Create Account
-            </button>
-
+            </Button>
           </Form>
         </Card>
       </div>
-
-
     </>
   );
 };
-
 
 const FormikLoginForm = withFormik({
   mapPropsToValues({ username, password, history }) {
@@ -71,7 +77,6 @@ const FormikLoginForm = withFormik({
     };
   },
 
-
   validationSchema: Yup.object().shape({
     username: Yup.string().required('Please enter a username'),
     password: Yup.string().required('Create a password')
@@ -80,9 +85,8 @@ const FormikLoginForm = withFormik({
     axios
       .post('http://localhost:5000/api/login', values)
       .then(res => {
-
-        localStorage.setItem('token', res.data.payload)
-        values.history.push("/BubblePage")
+        localStorage.setItem('token', res.data.payload);
+        values.history.push('/BubblePage');
 
         resetForm();
       })
